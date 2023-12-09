@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { WeatherService } from '../../services/weather.service';
 import { WeatherData } from 'src/app/models/interfaces/WeatherData';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-wheater-home',
   templateUrl: './wheater-home.component.html',
   styleUrls: []
 })
-export class WheaterHomeComponent implements OnInit {
+export class WheaterHomeComponent implements OnInit, OnDestroy {
+
+  private readonly destroy$: Subject<void> = new Subject();
 
   initialCityName = 'São Paulo';
   country = 'br';
@@ -22,6 +25,7 @@ export class WheaterHomeComponent implements OnInit {
   getWeatherData(cityName: string, country: string): void {
 
     this._weatherService.getWeatherData(cityName, country)
+    .pipe(takeUntil(this.destroy$))
     .subscribe({
       next: (response) => {
         response && (this.weatherData = response);
@@ -33,5 +37,11 @@ export class WheaterHomeComponent implements OnInit {
     })
 
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
 
 }
