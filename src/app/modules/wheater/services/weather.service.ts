@@ -12,7 +12,7 @@ export class WeatherService {
   constructor(private _http: HttpClient) {
   }
 
-  getWeatherData(cityName: string): Observable<any> {
-    return this._http.get(`https://api.openweahermap.org/data/2.5/weather?q=${cityName}&units=metric&mode=json&appid=${this._apiKey}`, {});
+  getWeatherData(cityName: string, country: string): Observable<any> {
+    return this._http.get(`https://api.openweathermap.org/data/2.5/weather?q=${cityName},${country}&APPID=${this._apiKey}`, {});
   }
 }
